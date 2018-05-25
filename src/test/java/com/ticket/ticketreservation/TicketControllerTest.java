@@ -17,9 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -34,7 +32,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @WebAppConfiguration
 public class TicketControllerTest {
 
-    private static final int TIMEOUTINSECONDS = 10;
+    private static final int TIMEOUTINSECONDS = 30;
 
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
@@ -389,12 +387,20 @@ public class TicketControllerTest {
                 .andExpect(jsonPath("$", is(0)));
 
         //If this test fails, check whether TIMEOUTINSECONDS is same in TicketServiceImpl
-        Thread.sleep(TIMEOUTINSECONDS * 1000);
-
-        mockMvc.perform(get("/tickets/Venue1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$", is(3)));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    mockMvc.perform(get("/tickets/Venue1"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(contentType))
+                            .andExpect(jsonPath("$", is(3)));
+                } catch (Exception e){
+                    System.out.println(e.getStackTrace());
+                }
+            }
+        }, TIMEOUTINSECONDS *1000);
 
     }
 

@@ -21,7 +21,7 @@ public class TicketServiceImpl implements TicketService {
     private SeatHoldRepository seatHoldRepository;
     private SeatReserveRepository seatReserveRepository;
 
-    private static final int TIMEOUTINSECONDS = 10;
+    private static final int TIMEOUTINSECONDS = 30;
 
     @Autowired
     public TicketServiceImpl(VenueRepository venueRepository, RowRepository rowRepository, SeatRepository seatRepository, SeatHoldRepository seatHoldRepository, SeatReserveRepository seatReserveRepository) {
